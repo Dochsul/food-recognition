@@ -13,7 +13,27 @@ from torch import Tensor
 from torchvision.transforms import functional as F
 
 from albumentations.core.transforms_interface import DualTransform
-from albumentations.augmentations.bbox_utils import denormalize_bbox, normalize_bbox
+
+# Simple bbox utils for compatibility with newer albumentations versions
+def denormalize_bbox(bbox, height, width):
+    """Denormalize bbox from [0, 1] to pixel coordinates"""
+    x_min, y_min, x_max, y_max = bbox
+    return (
+        x_min * width,
+        y_min * height,
+        x_max * width,
+        y_max * height,
+    )
+
+def normalize_bbox(bbox, height, width):
+    """Normalize bbox from pixel coordinates to [0, 1]"""
+    x_min, y_min, x_max, y_max = bbox
+    return (
+        x_min / width,
+        y_min / height,
+        x_max / width,
+        y_max / height,
+    )
 
 
 class CustomCutout(DualTransform):
